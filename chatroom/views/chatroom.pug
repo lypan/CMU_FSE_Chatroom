@@ -1,0 +1,25 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome! #{account}
+  ul(id=message)
+    
+
+
+  //- script(type='text/javascript', src='/javascripts/chatroom.js').
+    
+  script(type='text/javascript').
+    //- alert("#{account}")
+
+
+
+    //- <form id="loginForm" action="/login" method="post">
+    //-   Account:<br>
+    //-   <input type="text" name="account" value="" placeholder="Account">
+    //-   <br> Password:<br>
+    //-   <input type="text" name="password" value="" placeholder="Password">
+    //-   <input type="password" name="password" value="" placeholder="Password">
+    //-   <br><br>
+    //-   <input type="submit" value="Login">
+    //- </form>

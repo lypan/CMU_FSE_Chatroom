@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1= 'chat ' + title
+  //- p Welcome to #{title}
+  form(method='POST' action='/login')
+    div
+      label(for='account') Account:
+      input#account(type='text', placeholder='Account' name='account' value='')
+      br
+      label(for='password') Password:
+      input#password(type='password', placeholder='Password' name='password' value='')
+      br
+    button(type='submit') Submit
