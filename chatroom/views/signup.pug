@@ -1,0 +1,22 @@
+html
+  head
+    title= title
+    //- link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1= title
+    //- p Welcome to #{title}
+    form(method='POST' action='/signup')
+      div
+        label(for='account') Account:
+        input#account(type='text', placeholder='Account' name='account' value='')
+        br
+        label(for='password') Password:
+        input#password(type='password', placeholder='Password' name='password' value='')
+        br
+      button(type='submit') Register
+      
+      
+      script(src='https://code.jquery.com/jquery-3.2.1.min.js', integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=', crossorigin='anonymous')
+      script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+      script(type='text/javascript').
+        if("#{error}")alert("#{error}");

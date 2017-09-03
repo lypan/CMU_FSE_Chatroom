@@ -1,14 +1,19 @@
-extends layout
-
-block content
-  h1= 'chat ' + title
-  //- p Welcome to #{title}
-  form(method='POST' action='/login')
-    div
-      label(for='account') Account:
-      input#account(type='text', placeholder='Account' name='account' value='')
-      br
-      label(for='password') Password:
-      input#password(type='password', placeholder='Password' name='password' value='')
-      br
-    button(type='submit') Submit
+html
+  head    
+    title= title
+    //- link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    h1= title
+    //- p Welcome to #{title}
+    form(method='POST' action='/login')
+      div
+        label(for='account') Account:
+        input#account(type='text', placeholder='Account' name='account' value='')
+        br
+        label(for='password') Password:
+        input#password(type='password', placeholder='Password' name='password' value='')
+        br
+      button(type='submit') Submit
+      
+      //- script(type='text/javascript').
+      //-   if("#{error}")alert("#{error}");

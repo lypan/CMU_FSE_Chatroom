@@ -1,25 +1,111 @@
-extends layout
+doctype html
+html
+    head
+        title Test
+        link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+        link(href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', rel='stylesheet', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    body
+        .container-fluid
+            .row
+                .col-12
+                    .panel.panel-primary
+                        #accordion.panel-heading
+                            span.glyphicon.glyphicon-comment
+                            |  Chat
+                            .btn-group.pull-right
+                                a.btn.btn-default.btn-xs(type='button', data-toggle='collapse', data-parent='#accordion', href='#collapseOne')
+                                    span.glyphicon.glyphicon-chevron-down
+                        #collapseOne.panel-collapse
+                            .panel-body
+                                ul#messages.chat
+                                    li.left.clearfix
+                                        span.chat-img.pull-left
+                                            img.img-circle(src='http://placehold.it/50/55C1E7/fff&text=U', alt='User Avatar')
+                                        .chat-body.clearfix
+                                            .header.clearfix
+                                                strong.primary-font Jack Sparrow
+                                                small.pull-right.text-muted
+                                                    span.glyphicon.glyphicon-time
+                                                    |                         12 mins ago
+                                            p.text-left
+                                                | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+                                    li.right.clearfix
+                                        span.chat-img.pull-right
+                                            img.img-circle(src='http://placehold.it/50/FA6F57/fff&text=ME', alt='User Avatar')
+                                        .chat-body.clearfix
+                                            .header.clearfix
+                                                small.text-muted
+                                                    span.glyphicon.glyphicon-time
+                                                    | 13 mins ago
+                                                strong.pull-right.primary-font Bhaumik Patel
+                                            p.text-right
+                                                | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales.
+                            .panel-footer.navbar-fixed-bottom
+                                form(action='')
+                                    .input-group
+                                        input#btn-input.form-control.input-sm(type='text', placeholder='Type your message here...')
+                                        span.input-group-btn
+                                            button#btn-chat.btn.btn-warning.btn-sm
+                                                | Send
+        script(src='https://code.jquery.com/jquery-3.2.1.min.js', integrity='sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=', crossorigin='anonymous')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+        script(src='/socket.io/socket.io.js')
+        script(type='text/javascript').
+          
+          $(function () {
+            var socket = io();
+            
+            $('form').submit(
+              function() {
+                socket.emit('chat message', {account : "#{account}", content : $('#btn-input').val(), timestamp : $.now()});
+                $('#btn-input').val('');
+                return false;
+              }
+            );  
+            
+            socket.on('chat message', function(msg) {
+              
+              var iconText = msg.account.charAt(0) + msg.account.charAt(msg.account.length-1);;
+              var account = msg.account;
+              var time = new Date(msg.timestamp).toUTCString();
+              var message = msg.content;
+              
+              if(msg.account == '#{account}') {
+                /*right*/
 
-block content
-  h1= title
-  p Welcome! #{account}
-  ul(id=message)
+                var msgHtml =   
+                $('<li class="right clearfix"> \
+                    <span class="chat-img pull-right"> \
+                      <img src="http://placehold.it/50/FA6F57/fff&text=' + iconText + '" alt="User Avatar" class="img-circle" /> \
+                    </span> \
+                    <div class="chat-body clearfix"> \
+                      <div class="header clearfix"> \
+                        <small class="text-muted"><span class="glyphicon glyphicon-time"></span>' + time + '</small> \
+                        <strong class="pull-right primary-font ">' + account + '</strong> \
+                      </div> \
+                      <p class="text-right">' + message + '</p> \
+                    </div> \
+                  </li>');
+              }
+              else {
+                  /*left*/
+                  var msgHtml =   
+                  $('<li class="left clearfix"> \
+                      <span class="chat-img pull-left"> \
+                        <img src="http://placehold.it/50/FA6F57/fff&text=' + iconText + '" alt="User Avatar" class="img-circle" /> \
+                      </span> \
+                      <div class="chat-body clearfix"> \
+                        <div class="header clearfix"> \
+                          <small class="text-muted"><span class="glyphicon glyphicon-time"></span>' + time + '</small> \
+                          <strong class="pull-left primary-font ">' + account + '</strong> \
+                        </div> \
+                        <p class="text-left">' + message + '</p> \
+                      </div> \
+                    </li>');
+              }
+              msgHtml.appendTo($('#messages'));
+            });
+            
+          });
+
     
-
-
-  //- script(type='text/javascript', src='/javascripts/chatroom.js').
-    
-  script(type='text/javascript').
-    //- alert("#{account}")
-
-
-
-    //- <form id="loginForm" action="/login" method="post">
-    //-   Account:<br>
-    //-   <input type="text" name="account" value="" placeholder="Account">
-    //-   <br> Password:<br>
-    //-   <input type="text" name="password" value="" placeholder="Password">
-    //-   <input type="password" name="password" value="" placeholder="Password">
-    //-   <br><br>
-    //-   <input type="submit" value="Login">
-    //- </form>
