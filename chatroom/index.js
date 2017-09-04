@@ -29,9 +29,14 @@ app.use(session({
 var User = require('./user_model.js');
 var Chat = require('./chat_model.js');
 
+app.get('/logout', function(req, res, next) {
+  req.session.destroy();
+  res.redirect('/');
+});
+
 
 app.get('/', function(req, res, next) {
-  req.session.destroy();
+  // req.session.destroy();
   if (req.session) {
     console.log(req.session);
     if (req.session.account) res.redirect('/chatroom');
