@@ -61,39 +61,28 @@ app.post('/login', function(req, res, next) {
     );
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
-    console.log("here");
-
     db.once('open', function() {
       // we're connected!
       User.findOne({ 'account': account, 'password': password }, 'account password', function (err, user) {
-        if(user && user.account && user.password){
-          db.close();
+        db.close();
+        if(user){
           req.session.account = account;
           res.redirect('/chatroom');
         }
         else {
-          res.send('Wrong account or password');
+          // res.redirect('/signup');
+          res.render('login', {
+            title: 'login',
+            error: 'Account or Password are wrong!'
+          });
         }
       })
     });
-    // var queryResult = database.find((account) => {
-    //   return account == req.body.account;
-    // });
-    //
-    // if (queryResult) {
-    //   console.log('find!');
-    //   req.session.account = req.body.account;
-    //   res.redirect('/chatroom');
-    // } else {
-    //   console.log('not find');
-    //   res.redirect('/signup');
-    // }
   }
-
 });
 
 app.get('/chatroom', function(req, res, next) {
-  console.log('chatroom');
+  console.log('get chatroom');
   res.render('chatroom', {
     title: 'chatroom',
     account: req.session.account
@@ -119,23 +108,25 @@ app.post('/signup', function(req, res, next) {
   );
   var db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error:'));
-
+  console.log('connection to user');
   db.once('open', function() {
     // we're connected!
     User.findOne({ 'account': account}, 'account', function (err, user) {
       if(!user){
         var user = new User({ account: account, password: password });
+
         user.save(function (err, user) {
           if (err) return console.error(err);
+          db.close();
         });
-        db.close();
+
         req.session.account = account;
         res.redirect('/chatroom');
       }
       else {
         res.render('signup', {
           title: 'signup',
-          error: 'There are some problems. Please retry!'
+          error: 'Account is already exists!'
         });
       }
     });
@@ -154,36 +145,30 @@ io.on('connection', function(socket) {
   var db = mongoose.connection;
   db.on('error', console.error.bind(console, 'connection error:'));
 
-  Chat.find({}, 'account content time', function(err, msgs){
+  Chat.find({}, 'account content timestamp', function(err, msgs){
       if(err){
         console.log(err);
       } else{
-          // res.render('user-list', users);
-          // console.log('retrieved list of messages', msgs.length, msgs[0].content);
-          console.log(msgs);
+          // console.log(msgs);
       }
 
       if(msgs.length != 0) {
         for(var i = 0; i < msgs.length; i ++) {
-          console.log(msgs[i].content);
-          io.emit('chat message', msgs[i]);
+          console.log(msgs[i]);
+          socket.emit('chat message', msgs[i]);
         }
       }
 
       socket.on('chat message', function(msg){
         console.log(msg);
         // mongodb
-
-        var chat = new Chat({ account: msg.account, content: msg.content, timestamp: msg.time });
+        var chat = new Chat({ account: msg.account, content: msg.content, timestamp: msg.timestamp });
         chat.save(function (err, chat) {
           if (err) return console.error(err);
         });
         io.emit('chat message', msg);
       });
   });
-
-
-
 
   socket.on('disconnect', function() {
     console.log('user disconnected');
